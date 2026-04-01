@@ -1,0 +1,718 @@
+/*
+  ============================================================
+  Pomodoro Timer — style.css
+  ============================================================
+  Vanilla CSS only. No preprocessors, no external libraries.
+  Organised into the following sections:
+
+    1.  Design Tokens (CSS Custom Properties)
+    2.  Base Reset & Defaults
+    3.  Typography
+    4.  Layout Utilities
+    5.  Skip Link
+    6.  Sections (generic)
+    7.  Reduced Motion
+    8.  Pomodoro Timer
+
+  HOW TO CUSTOMISE:
+  - Change design token values in Section 1.
+  - Most visual changes can be made there alone.
+  - Add new component blocks below the existing ones.
+  - Do not change the order of the base/reset sections.
+  ============================================================
+*/
+
+
+/* ============================================================
+   1. DESIGN TOKENS
+   All reusable values live here as CSS custom properties.
+   Changing these cascades through the entire stylesheet.
+   ============================================================ */
+
+:root {
+
+  /* --- Colour Palette --- */
+  /* Primary brand colour and its scale */
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary:     #2563eb;  /* main interactive colour */
+  --color-primary-700: #1d4ed8;
+  --color-primary-900: #1e3a8a;
+
+  /* Neutral scale — used for text, borders, backgrounds */
+  --color-neutral-50:  #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-500: #64748b;
+  --color-neutral-700: #334155;
+  --color-neutral-900: #0f172a;
+
+  /* Semantic colours */
+  --color-text:        var(--color-neutral-900);
+  --color-text-muted:  var(--color-neutral-500);
+  --color-bg:          #ffffff;
+  --color-bg-alt:      var(--color-neutral-50);
+  --color-border:      var(--color-neutral-200);
+  --color-focus-ring:  var(--color-primary);
+
+  /* Status colours */
+  --color-success:     #16a34a;
+  --color-success-bg:  #dcfce7;
+  --color-error:       #dc2626;
+  --color-error-bg:    #fee2e2;
+  --color-warning:     #d97706;
+  --color-warning-bg:  #fef3c7;
+
+  /* --- Typography --- */
+  /* System font stack — no external fonts required */
+  --font-family-base:    system-ui, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+                         "Apple Color Emoji", "Segoe UI Emoji";
+  --font-family-mono:    ui-monospace, "Cascadia Code", "Source Code Pro",
+                         Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+  /* Type scale (using a fluid base between 16–18px) */
+  --font-size-xs:   0.75rem;    /* 12px */
+  --font-size-sm:   0.875rem;   /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg:   1.125rem;   /* 18px */
+  --font-size-xl:   1.25rem;    /* 20px */
+  --font-size-2xl:  1.5rem;     /* 24px */
+  --font-size-3xl:  1.875rem;   /* 30px */
+  --font-size-4xl:  2.25rem;    /* 36px */
+  --font-size-5xl:  3rem;       /* 48px */
+
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --line-height-tight:  1.25;
+  --line-height-snug:   1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed:1.625;
+
+  /* --- Spacing Scale --- */
+  /* Based on a 4px grid */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
+  --space-24: 6rem;      /* 96px */
+
+  /* --- Layout --- */
+  --container-max:       72rem;   /* 1152px — main max-width */
+  --container-narrow:    48rem;   /* 768px  — text/form columns */
+  --container-padding-x: var(--space-4);
+
+  /* --- Borders & Radius --- */
+  --border-width:  1px;
+  --radius-sm:     0.25rem;
+  --radius-md:     0.5rem;
+  --radius-lg:     0.75rem;
+  --radius-xl:     1rem;
+  --radius-full:   9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* --- Z-Index Layers --- */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-nav:     100;
+  --z-overlay: 200;
+  --z-modal:   300;
+  --z-toast:   400;
+}
+
+
+/* ============================================================
+   2. BASE RESET & DEFAULTS
+   A lightweight opinionated reset on top of browser defaults.
+   ============================================================ */
+
+/*
+  Box-sizing border-box on everything.
+  This makes width/height include padding and border.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove list styles when a list has role="list" */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+/* Smooth scrolling for anchor links, unless motion is reduced */
+html {
+  scroll-behavior: smooth;
+  /* Prevent layout shift from scrollbar appearing */
+  scrollbar-gutter: stable;
+}
+
+/* Base body styles */
+body {
+  font-family:  var(--font-family-base);
+  font-size:    var(--font-size-base);
+  font-weight:  var(--font-weight-normal);
+  line-height:  var(--line-height-normal);
+  color:        var(--color-text);
+  background:   var(--color-bg);
+  /* Prevent text from looking blurry on sub-pixel rendering */
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Images and media: responsive by default */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Inherit fonts for form elements (browsers don't do this by default) */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Prevent text overflow in headings and paragraphs */
+p,
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* Allow text areas to resize only vertically */
+textarea {
+  resize: vertical;
+}
+
+/* Ensure anchors inherit colour by default (override per-component) */
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--color-primary-700);
+}
+
+/* Horizontal rule */
+hr {
+  border: none;
+  border-top: var(--border-width) solid var(--color-border);
+  margin-block: var(--space-8);
+}
+
+/* Code / pre styles */
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
+}
+
+pre {
+  overflow-x: auto;
+  background: var(--color-neutral-100);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+
+/* ============================================================
+   3. TYPOGRAPHY
+   Heading and text defaults.
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight:  var(--font-weight-bold);
+  line-height:  var(--line-height-tight);
+  color:        var(--color-text);
+}
+
+h1 { font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl)); }
+h2 { font-size: clamp(var(--font-size-2xl), 3.5vw, var(--font-size-4xl)); }
+h3 { font-size: clamp(var(--font-size-xl),  2.5vw, var(--font-size-3xl)); }
+h4 { font-size: var(--font-size-xl); }
+h5 { font-size: var(--font-size-lg); }
+h6 { font-size: var(--font-size-base); }
+
+/* A utility class for muted / secondary text */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Small text */
+small, .text-sm {
+  font-size: var(--font-size-sm);
+}
+
+
+/* ============================================================
+   4. LAYOUT UTILITIES
+   Container and general layout helpers.
+   ============================================================ */
+
+/* Standard centred container with side padding */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding-x);
+}
+
+/* Narrower container for text-heavy content */
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+/* Visually hidden — accessible text that is hidden but readable by screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+/* ============================================================
+   5. SKIP LINK
+   Appears on focus only; allows keyboard users to bypass nav.
+   ============================================================ */
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: var(--z-toast);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  /* Hidden until focused */
+  transform: translateY(-200%);
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-neutral-900);
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   8. SECTIONS (GENERIC)
+   Reusable section shell used throughout the page.
+   ============================================================ */
+
+.section {
+  padding-block: var(--space-16) var(--space-20);
+}
+
+/* Alternate background for visual separation between sections */
+.section--alt {
+  background-color: var(--color-bg-alt);
+}
+
+.section-heading {
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+
+.section-subheading {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-12);
+  max-width: 50ch;
+  margin-inline: auto;
+}
+
+
+/* ============================================================
+   14. REDUCED MOTION
+   Disable or simplify animations for users who prefer it.
+   https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration:   0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:  0.01ms !important;
+    scroll-behavior:      auto !important;
+  }
+}
+
+
+/* ============================================================
+   16. POMODORO TIMER
+   Circular-progress timer with focus/break phases, controls,
+   cycle stepper, up-next preview, motivational message, and
+   session stats. All colour values use design tokens; the three
+   green tones are scoped to #pomodoro so they stay isolated.
+   ============================================================ */
+
+/* --- Scoped green palette (3 tones, defined once as local tokens) --- */
+#pomodoro {
+  --pomo-accent:      var(--color-success);      /* dark green  #16a34a — focus phase  */
+  --pomo-accent-mid:  #22c55e;                   /* mid  green  #22c55e — break phase  */
+  --pomo-accent-soft: var(--color-success-bg);   /* light green #dcfce7 — track / bg   */
+}
+
+/* Break phase: shift accent to the lighter mid-green */
+#pomodoro.pomo-is-break {
+  --pomo-accent: var(--pomo-accent-mid);
+}
+
+/* --- Section layout --- */
+#pomodoro .container--narrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+/* --- Phase label + cycle counter row --- */
+.pomo-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pomo-phase-label {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--pomo-accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color var(--transition-normal);
+}
+
+.pomo-cycle-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background: var(--pomo-accent-soft);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-normal);
+}
+
+/* --- Circular SVG ring wrapper ---
+   Position-relative so the MM:SS overlay can be centred
+   absolutely over the SVG element. */
+.pomo-ring-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.pomo-ring {
+  display: block;
+  overflow: visible;
+}
+
+/* Track: the faint full circle behind the progress arc */
+.pomo-ring__track {
+  fill: none;
+  stroke: var(--pomo-accent-soft);
+  stroke-width: 6;
+  transition: stroke var(--transition-normal);
+}
+
+/* Progress arc: stroke-dashoffset animated by JS each second */
+.pomo-ring__progress {
+  fill: none;
+  stroke: var(--pomo-accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  /* dasharray set to circumference (2π×45 ≈ 282.74) by JS on init */
+  stroke-dasharray: 282.74;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke var(--transition-normal);
+}
+
+/* Subtle scale pulse when running — respects reduced-motion */
+#pomodoro.pomo-is-running .pomo-ring-wrap {
+  animation: pomo-breathe 4s ease-in-out infinite;
+}
+
+@keyframes pomo-breathe {
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.02); }
+}
+
+/* Time display centred over the ring */
+.pomo-time-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pomo-time {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* --- Controls row: [ Reset ] [ Play/Pause ] [ Skip ] --- */
+.pomo-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+/* Shared button base */
+.pomo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--transition-fast),
+    color            var(--transition-fast),
+    box-shadow       var(--transition-fast),
+    transform        var(--transition-fast);
+}
+
+.pomo-btn:focus-visible {
+  outline: 2px solid var(--pomo-accent);
+  outline-offset: 3px;
+}
+
+.pomo-btn:active {
+  transform: scale(0.96);
+}
+
+/* Primary (Play/Pause) — large, dominant */
+.pomo-btn--primary {
+  width: 4.5rem;
+  height: 4.5rem;
+  background: var(--pomo-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgb(22 163 74 / 0.35);
+  transition:
+    background-color var(--transition-fast),
+    box-shadow       var(--transition-fast),
+    transform        var(--transition-fast);
+}
+
+.pomo-btn--primary:hover {
+  background: var(--color-success);
+  box-shadow: 0 6px 18px rgb(22 163 74 / 0.45);
+}
+
+/* Secondary (Reset / Skip) — smaller, quieter */
+.pomo-btn--secondary {
+  padding: var(--space-3) var(--space-4);
+  background: var(--pomo-accent-soft);
+  color: var(--pomo-accent);
+  min-height: 2.75rem;
+}
+
+.pomo-btn--secondary:hover {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+/* Play icon hidden when running; pause icon hidden when stopped */
+.pomo-icon-pause              { display: none; }
+.pomo-btn--primary.is-running .pomo-icon-play  { display: none; }
+.pomo-btn--primary.is-running .pomo-icon-pause { display: block; }
+
+/* --- Cycle stepper --- */
+.pomo-setting {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pomo-setting-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.pomo-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--pomo-accent-soft);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-2);
+}
+
+.pomo-stepper-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--color-bg);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  color: var(--pomo-accent);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.pomo-stepper-btn:hover {
+  background: var(--pomo-accent);
+  color: #ffffff;
+}
+
+.pomo-stepper-btn:focus-visible {
+  outline: 2px solid var(--pomo-accent);
+  outline-offset: 2px;
+}
+
+/* Disabled stepper buttons when timer is running */
+.pomo-stepper-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pomo-stepper-val {
+  min-width: 1.5rem;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Up-next line --- */
+.pomo-up-next {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  min-height: 1.25rem;
+}
+
+/* --- Motivational message --- */
+.pomo-message {
+  font-size: var(--font-size-sm);
+  color: var(--pomo-accent);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  min-height: 1.25rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* --- Stats row --- */
+.pomo-stats {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  padding-top: var(--space-2);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.pomo-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 5rem;
+}
+
+.pomo-stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--pomo-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition: color var(--transition-normal);
+}
+
+.pomo-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: var(--line-height-snug);
+}
+
+/* --- Reduced motion overrides for this component --- */
+@media (prefers-reduced-motion: reduce) {
+  #pomodoro.pomo-is-running .pomo-ring-wrap {
+    animation: none;
+  }
+
+  .pomo-ring__progress {
+    transition: stroke var(--transition-normal);
+    /* Instant dashoffset change — no 1s slide */
+  }
+}
+
+

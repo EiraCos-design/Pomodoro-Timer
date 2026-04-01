@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+  404.html — GitHub Pages Custom Error Page
+  ============================================================
+  GitHub Pages serves this file automatically when a requested
+  URL doesn't match any file in the repository.
+
+  For single-page apps that use client-side routing, you can
+  redirect from here back to index.html and let JS handle routing.
+  For a static multi-page site, this is simply a friendly 404 page.
+
+  See README.md for more details on GitHub Pages deployment.
+  ============================================================
+-->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — App Name</title>
+  <meta name="description" content="The page you were looking for could not be found." />
+  <!-- Prevent search engines from indexing the error page -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="any" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* Inline styles specific to this page only */
+    .error-page {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-8);
+    }
+
+    .error-code {
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: var(--font-weight-bold);
+      line-height: 1;
+      color: var(--color-primary-200);
+      margin-bottom: var(--space-4);
+      letter-spacing: -0.05em;
+    }
+
+    .error-title {
+      font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
+      margin-bottom: var(--space-4);
+    }
+
+    .error-description {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-lg);
+      max-width: 40ch;
+      margin-bottom: var(--space-8);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .error-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <main id="main-content" class="error-page" aria-labelledby="error-heading">
+
+    <!-- Large decorative 404 number -->
+    <p class="error-code" aria-hidden="true">404</p>
+
+    <h1 id="error-heading" class="error-title">Page not found</h1>
+
+    <p class="error-description">
+      The page you were looking for doesn't exist, may have been moved,
+      or the URL might be incorrect.
+    </p>
+
+    <div class="error-actions">
+      <a href="/" class="btn btn--primary">Go to homepage</a>
+      <button
+        class="btn btn--outline"
+        onclick="history.back()"
+        type="button"
+      >Go back</button>
+    </div>
+
+  </main>
+
+  <script>
+    /*
+      OPTIONAL: SPA redirect workaround for GitHub Pages.
+
+      GitHub Pages does not support server-side rewriting, so
+      if you use client-side routing (e.g. history.pushState),
+      deep links will land on this 404 page.
+
+      The snippet below saves the current URL to sessionStorage
+      and redirects to index.html. index.html then reads the
+      saved path and restores it via history.replaceState.
+
+      HOW TO USE IT:
+        1. Uncomment the block below in this file.
+        2. Add the corresponding restoration snippet in index.html's
+           <head> (before your stylesheet link).
+
+      ─── In 404.html ───────────────────────────────────────
+
+      const segmentCount = 0; // set to 1 if your repo is in a subfolder
+      const l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') +
+        '/?/' + l.pathname.slice(1).split('/').slice(segmentCount).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+
+      ─── In index.html <head> ───────────────────────────────
+
+      (function(l) {
+        if (l.search[1] === '/') {
+          const decoded = l.search.slice(1).split('&').map(s => s.replace(/~and~/g, '&'));
+          window.history.replaceState(null, null,
+            decoded[0] + (decoded[1] ? '?' + decoded[1] : '') + l.hash
+          );
+        }
+      }(window.location))
+
+    */
+  </script>
+
+</body>
+</html>

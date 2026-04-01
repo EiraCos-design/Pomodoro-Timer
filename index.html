@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+  ============================================================
+  Pomodoro Timer — index.html
+  ============================================================
+  A dependency-free, locally-runnable Pomodoro timer.
+  No build step. No frameworks. No CDN. Just open and edit.
+  ============================================================
+-->
+
+<head>
+  <!-- ─────────────────────────────────────────────
+       CHARACTER ENCODING & VIEWPORT
+       Always the first two meta tags.
+  ───────────────────────────────────────────── -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ─────────────────────────────────────────────
+       PRIMARY META
+  ───────────────────────────────────────────── -->
+  <title>Pomodoro Timer</title>
+  <meta name="description" content="A minimal, focused Pomodoro timer. No distractions." />
+  <meta name="author" content="Your Name" />
+
+  <!-- ─────────────────────────────────────────────
+       OPEN GRAPH / SOCIAL SHARING
+  ───────────────────────────────────────────── -->
+  <meta property="og:title" content="Pomodoro Timer" />
+  <meta property="og:description" content="A minimal, focused Pomodoro timer." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourusername.github.io/your-repo/" />
+  <meta property="og:image" content="https://yourusername.github.io/your-repo/assets/icons/og-image.png" />
+
+  <!-- ─────────────────────────────────────────────
+       FAVICON
+  ───────────────────────────────────────────── -->
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+
+  <!-- ─────────────────────────────────────────────
+       PWA MANIFEST (OPTIONAL)
+  ───────────────────────────────────────────── -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- ─────────────────────────────────────────────
+       THEME COLOR
+  ───────────────────────────────────────────── -->
+  <meta name="theme-color" content="#16a34a" />
+
+  <!-- ─────────────────────────────────────────────
+       STYLESHEET
+  ───────────────────────────────────────────── -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- ─────────────────────────────────────────────
+       SKIP LINK
+       Allows keyboard users to jump past any chrome
+       directly to main content. Required for WCAG AA.
+  ───────────────────────────────────────────── -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT
+       id="main-content" is the skip-link target.
+  ═══════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- ─────────────────────────────────────────────
+         POMODORO TIMER SECTION
+         A minimal, circular-progress Pomodoro timer.
+         Supports focus/break cycles, session stats, and
+         motivational messages. All logic in js/main.js
+         under initPomodoroTimer().
+    ───────────────────────────────────────────── -->
+    <section class="section section--alt" id="pomodoro" aria-labelledby="pomodoro-heading">
+      <div class="container container--narrow">
+
+        <h1 id="pomodoro-heading" class="section-heading">Pomodoro Timer</h1>
+
+        <!-- Phase label + cycle counter -->
+        <div class="pomo-meta">
+          <!-- aria-live="assertive" so screen readers announce phase changes immediately -->
+          <span class="pomo-phase-label" id="pomo-phase" aria-live="assertive" aria-atomic="true">Focus</span>
+          <span class="pomo-cycle-label" id="pomo-cycle">Cycle 1 of 4</span>
+        </div>
+
+        <!-- Circular SVG timer
+             The progress circle uses stroke-dashoffset to represent
+             remaining time. Starts from 12 o'clock via SVG rotate. -->
+        <div class="pomo-ring-wrap" aria-hidden="true">
+          <svg class="pomo-ring" viewBox="0 0 100 100" width="220" height="220" role="img" aria-label="Timer circle">
+            <!-- Background track ring -->
+            <circle class="pomo-ring__track" cx="50" cy="50" r="45"/>
+            <!-- Animated progress arc; stroke-dashoffset driven by JS -->
+            <circle class="pomo-ring__progress" id="pomo-ring-progress"
+                    cx="50" cy="50" r="45"
+                    transform="rotate(-90 50 50)"/>
+          </svg>
+          <!-- MM:SS time centred over the ring -->
+          <div class="pomo-time-wrap">
+            <!-- aria-live="polite" for periodic screen-reader time updates -->
+            <span class="pomo-time" id="pomo-time"
+                  aria-live="polite" aria-atomic="true"
+                  aria-label="Time remaining: 25 minutes 00 seconds">25:00</span>
+          </div>
+        </div>
+
+        <!-- Controls: Reset | Play/Pause | Skip -->
+        <div class="pomo-controls" role="group" aria-label="Timer controls">
+
+          <button class="pomo-btn pomo-btn--secondary" id="pomo-reset" aria-label="Reset timer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true" focusable="false">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            <span class="sr-only">Reset</span>
+          </button>
+
+          <!-- aria-pressed reflects running state for assistive tech -->
+          <button class="pomo-btn pomo-btn--primary" id="pomo-play"
+                  aria-label="Start timer" aria-pressed="false">
+            <svg class="pomo-icon-play" width="22" height="22" viewBox="0 0 24 24"
+                 fill="currentColor" aria-hidden="true" focusable="false">
+              <polygon points="6,3 20,12 6,21"/>
+            </svg>
+            <svg class="pomo-icon-pause" width="22" height="22" viewBox="0 0 24 24"
+                 fill="currentColor" aria-hidden="true" focusable="false">
+              <rect x="5"  y="4" width="4" height="16" rx="1"/>
+              <rect x="14" y="4" width="4" height="16" rx="1"/>
+            </svg>
+            <span class="pomo-play-label sr-only">Start</span>
+          </button>
+
+          <button class="pomo-btn pomo-btn--secondary" id="pomo-skip" aria-label="Skip to next phase">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true" focusable="false">
+              <polygon points="5,4 15,12 5,20" fill="currentColor" stroke="none"/>
+              <line x1="19" y1="5" x2="19" y2="19"/>
+            </svg>
+            <span class="sr-only">Skip</span>
+          </button>
+
+        </div>
+
+        <!-- Cycle count setting (only active when timer is stopped) -->
+        <div class="pomo-setting">
+          <label class="pomo-setting-label" id="pomo-cycles-label">Cycles</label>
+          <div class="pomo-stepper" role="group" aria-labelledby="pomo-cycles-label">
+            <button class="pomo-stepper-btn" id="pomo-cycles-down" aria-label="Decrease total cycles">−</button>
+            <span class="pomo-stepper-val" id="pomo-cycles-val" aria-live="polite" aria-atomic="true">4</span>
+            <button class="pomo-stepper-btn" id="pomo-cycles-up" aria-label="Increase total cycles">+</button>
+          </div>
+        </div>
+
+        <!-- Up-next preview — updates when phase changes -->
+        <p class="pomo-up-next" id="pomo-up-next">Up next: Break 05:00</p>
+
+        <!-- Motivational message — rotates per session, never repeats consecutively -->
+        <p class="pomo-message" id="pomo-message" aria-live="polite"></p>
+
+        <!-- Simplified session stats — no charts, no tabs -->
+        <div class="pomo-stats" aria-label="Focus statistics">
+          <div class="pomo-stat">
+            <span class="pomo-stat-value" id="pomo-stat-sessions">0</span>
+            <span class="pomo-stat-label">Sessions today</span>
+          </div>
+          <div class="pomo-stat">
+            <span class="pomo-stat-value" id="pomo-stat-today">0m</span>
+            <span class="pomo-stat-label">Focus today</span>
+          </div>
+          <div class="pomo-stat">
+            <span class="pomo-stat-value" id="pomo-stat-month">0m</span>
+            <span class="pomo-stat-label">Focus this month</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+  <!-- /#main-content -->
+
+  <!-- ─────────────────────────────────────────────
+       SCRIPTS
+       Placed at the end of <body> so the DOM is
+       fully parsed before JS runs.
+  ───────────────────────────────────────────── -->
+  <script src="js/main.js"></script>
+
+</body>
+</html>
