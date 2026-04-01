@@ -12,6 +12,7 @@
  *   1.  Utility helpers
  *   2.  Initialisation entry point
  *   3.  Pomodoro timer
+ *   4.  Service worker registration
  *
  * HOW TO EXTEND:
  *   - Add new feature functions below initPomodoroTimer()
@@ -450,6 +451,24 @@ function initPomodoroTimer() {
 
 
 /* ============================================================
+   4. SERVICE WORKER REGISTRATION
+   Registers the PWA service worker for offline support.
+   Only active over HTTPS or localhost — silently skips on file://.
+   ============================================================ */
+
+/**
+ * Register the service worker if the browser supports it.
+ * Fails silently so the app always works without SW support.
+ */
+function initServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker
+    .register('./service-worker.js')
+    .catch(err => console.warn('[SW] Registration failed:', err));
+}
+
+
+/* ============================================================
    2. INITIALISATION ENTRY POINT
    ============================================================ */
 
@@ -458,6 +477,7 @@ function initPomodoroTimer() {
  * Called once the DOM is fully loaded.
  */
 function init() {
+  initServiceWorker();
   initPomodoroTimer();
 }
 

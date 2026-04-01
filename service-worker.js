@@ -57,9 +57,8 @@ const CACHE_URLS = [
   './css/style.css',
   './js/main.js',
   './manifest.json',
-  // './assets/icons/favicon.svg',
-  // './assets/icons/icon-192.png',
-  // './assets/icons/icon-512.png',
+  './assets/icons/favicon.svg',
+  './assets/icons/icon-512.png',
 ];
 
 
